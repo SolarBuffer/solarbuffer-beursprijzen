@@ -41,7 +41,6 @@ Kopieer de map `custom_components/solarbuffer_beursprijzen` naar de map
 | Duurste uur | Het duurste uur dat nog komt |
 | Beursprijs | De kale prijs van de beurs, incl. btw, zonder opslag en belasting |
 | Gasprijs | De all-in gasprijs, in EUR/m³ |
-| Goedkoopste leverancier nu | Wie dit uur het goedkoopst is, met de hele ranglijst als attribuut |
 
 De sensoren Stroomprijs, Beursprijs en Gasprijs hebben de attributen `vandaag`
 en `morgen`, een lijst met per uur `start`, `eind` en `prijs`. De prijzen van

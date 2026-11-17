@@ -193,13 +193,3 @@ class PrijzenCoordinator(DataUpdateCoordinator[dict[str, Any]]):
     def vanaf_nu(reeks: list[Uur]) -> list[Uur]:
         nu = dt_util.utcnow()
         return [u for u in reeks if u.eind > nu]
-
-    def leveranciers_nu(self) -> list[tuple[str, float]]:
-        """Alle leveranciers met hun stroomprijs van dit uur, goedkoopste eerst."""
-        uren = (self.data or {}).get("uren") or []
-        uit = []
-        for lev in (self.data or {}).get("leveranciers") or []:
-            nu = self.op_moment(_reeks(uren, lev.get("prijzen_ct") or []))
-            if nu is not None:
-                uit.append((lev.get("naam", "?"), nu.prijs))
-        return sorted(uit, key=lambda x: x[1])

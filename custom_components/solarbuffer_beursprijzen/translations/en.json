@@ -55,9 +55,6 @@
       },
       "gasprijs": {
         "name": "Gas price"
-      },
-      "goedkoopste_leverancier": {
-        "name": "Cheapest supplier now"
       }
     }
   }

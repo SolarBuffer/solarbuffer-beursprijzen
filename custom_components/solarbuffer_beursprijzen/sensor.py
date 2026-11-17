@@ -15,6 +15,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -149,16 +150,6 @@ SENSOREN: tuple[PrijsSensorBeschrijving, ...] = (
         waarde=lambda c: _prijs(c.op_moment(c.gas())),
         attributen=lambda c: _reeks_attributen(c, c.gas()),
     ),
-    PrijsSensorBeschrijving(
-        key="goedkoopste_leverancier",
-        translation_key="goedkoopste_leverancier",
-        icon="mdi:podium-gold",
-        waarde=lambda c: next(iter(c.leveranciers_nu()), (None,))[0],
-        attributen=lambda c: {
-            "prijs": next(iter(c.leveranciers_nu()), (None, None))[1],
-            "ranglijst": [{"leverancier": n, "prijs": p} for n, p in c.leveranciers_nu()],
-        },
-    ),
 )
 
 
@@ -166,6 +157,10 @@ async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback
 ) -> None:
     coordinator: PrijzenCoordinator = entry.runtime_data
+    # Opgeruimd in 0.1.4: haal hem weg bij wie hem nog heeft staan.
+    register = er.async_get(hass)
+    if oud := register.async_get_entity_id("sensor", DOMAIN, f"{entry.entry_id}_goedkoopste_leverancier"):
+        register.async_remove(oud)
     heeft_gas = coordinator.alleen_beurs or bool(coordinator.gas())
     async_add_entities(
         PrijsSensor(coordinator, entry, b)
