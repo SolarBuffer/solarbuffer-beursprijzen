@@ -47,10 +47,29 @@ def _start(u: Uur | None) -> datetime | None:
     return u.start if u else None
 
 
-def _reeks_attributen(c: PrijzenCoordinator, reeks: list[Uur]) -> dict[str, Any]:
-    """Vandaag en morgen per uur, voor grafieken en automatiseringen."""
+def _nordpool(reeks: list[Uur]) -> list[dict[str, Any]]:
+    return [{"start": d["start"], "end": d["eind"], "value": d["prijs"]} for d in (u.als_dict() for u in reeks)]
+
+
+def _reeks_attributen(c: PrijzenCoordinator, reeks: list[Uur], nordpool: bool = False) -> dict[str, Any]:
+    """Vandaag en morgen per uur, voor grafieken en automatiseringen.
+
+    Met nordpool erbij ook raw_today en raw_tomorrow in de vorm van de
+    Nordpool-integratie. Veel batterij- en laadintegraties, zoals Omnibattery,
+    lezen dat formaat, zodat je deze sensor daar als prijsbron kunt kiezen.
+    """
     vandaag = c.van_dag(reeks)
     morgen = c.van_dag(reeks, 1)
+    extra: dict[str, Any] = {}
+    if nordpool:
+        extra = {
+            "raw_today": _nordpool(vandaag),
+            "raw_tomorrow": _nordpool(morgen),
+            "tomorrow_valid": bool(morgen),
+            "currency": "EUR",
+            "unit": "kWh",
+            "price_in_cents": False,
+        }
     return {
         "vandaag": [u.als_dict() for u in vandaag],
         "morgen": [u.als_dict() for u in morgen],
@@ -58,6 +77,7 @@ def _reeks_attributen(c: PrijzenCoordinator, reeks: list[Uur]) -> dict[str, Any]
         "laagste_vandaag": _prijs(_min(vandaag)),
         "hoogste_vandaag": _prijs(_max(vandaag)),
         "gemiddeld_vandaag": _gem(vandaag),
+        **extra,
     }
 
 
@@ -77,7 +97,7 @@ SENSOREN: tuple[PrijsSensorBeschrijving, ...] = (
         suggested_display_precision=3,
         icon="mdi:flash",
         waarde=lambda c: _prijs(c.op_moment(c.stroom())),
-        attributen=lambda c: _reeks_attributen(c, c.stroom()),
+        attributen=lambda c: _reeks_attributen(c, c.stroom(), nordpool=True),
     ),
     PrijsSensorBeschrijving(
         key="stroomprijs_volgend_uur",
@@ -137,7 +157,7 @@ SENSOREN: tuple[PrijsSensorBeschrijving, ...] = (
         suggested_display_precision=3,
         icon="mdi:chart-line",
         waarde=lambda c: _prijs(c.op_moment(c.beurs())),
-        attributen=lambda c: _reeks_attributen(c, c.beurs()),
+        attributen=lambda c: _reeks_attributen(c, c.beurs(), nordpool=True),
     ),
     PrijsSensorBeschrijving(
         key="gasprijs",

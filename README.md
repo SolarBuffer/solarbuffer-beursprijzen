@@ -50,6 +50,18 @@ false.
 Stroomprijs kun je in het Energiedashboard gebruiken als de prijs van je
 afgenomen stroom, en Gasprijs als de prijs van je gas.
 
+## Gebruiken in andere integraties
+
+Stroomprijs en Beursprijs hebben ook de attributen `raw_today` en
+`raw_tomorrow`, in hetzelfde formaat als de Nordpool-integratie. Integraties
+voor batterijen en laadpalen die Nordpool lezen, kunnen deze prijzen dus
+gebruiken.
+
+Bijvoorbeeld [Omnibattery](https://github.com/ffunes/Omnibattery): kies daar bij
+de prijsinstellingen het type Nordpool en als prijssensor de Stroomprijs van
+deze integratie. Omnibattery rekent dan met wat je bij je leverancier
+werkelijk betaalt.
+
 ## Voorbeelden
 
 De wasmachine pas starten in het goedkoopste uur:
