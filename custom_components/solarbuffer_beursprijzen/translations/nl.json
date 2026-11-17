@@ -1,0 +1,64 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Kies je energieleverancier",
+        "description": "De prijs per uur is de beursprijs plus de inkoopopslag van je leverancier, energiebelasting en btw. Dat is wat je met een dynamisch contract werkelijk betaalt. Kies Alleen de beursprijs als je de kale prijs wilt.",
+        "data": {
+          "leverancier": "Leverancier"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Deze leverancier is al toegevoegd.",
+      "cannot_connect": "De prijzen konden niet worden opgehaald. Probeer het later opnieuw."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Kies je energieleverancier",
+        "data": {
+          "leverancier": "Leverancier"
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "De prijzen konden niet worden opgehaald. Probeer het later opnieuw."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "stroomprijs": {
+        "name": "Stroomprijs"
+      },
+      "stroomprijs_volgend_uur": {
+        "name": "Stroomprijs volgend uur"
+      },
+      "stroomprijs_laagste_vandaag": {
+        "name": "Laagste stroomprijs vandaag"
+      },
+      "stroomprijs_hoogste_vandaag": {
+        "name": "Hoogste stroomprijs vandaag"
+      },
+      "stroomprijs_gemiddeld_vandaag": {
+        "name": "Gemiddelde stroomprijs vandaag"
+      },
+      "goedkoopste_uur": {
+        "name": "Goedkoopste uur"
+      },
+      "duurste_uur": {
+        "name": "Duurste uur"
+      },
+      "beursprijs": {
+        "name": "Beursprijs"
+      },
+      "gasprijs": {
+        "name": "Gasprijs"
+      },
+      "goedkoopste_leverancier": {
+        "name": "Goedkoopste leverancier nu"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "domain": "solarbuffer_beursprijzen",
+  "name": "SolarBuffer Beursprijzen",
+  "codeowners": [
+    "@SolarBuffer"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/SolarBuffer/solarbuffer-beursprijzen",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/SolarBuffer/solarbuffer-beursprijzen/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

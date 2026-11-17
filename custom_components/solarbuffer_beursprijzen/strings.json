@@ -1,0 +1,64 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Choose your energy supplier",
+        "description": "The hourly price is the market price plus your supplier's purchase fee, energy tax and VAT: what you actually pay on a dynamic contract. Choose market price only for the bare price.",
+        "data": {
+          "leverancier": "Supplier"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This supplier has already been added.",
+      "cannot_connect": "Could not fetch prices. Please try again later."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Choose your energy supplier",
+        "data": {
+          "leverancier": "Supplier"
+        }
+      }
+    },
+    "abort": {
+      "cannot_connect": "Could not fetch prices. Please try again later."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "stroomprijs": {
+        "name": "Electricity price"
+      },
+      "stroomprijs_volgend_uur": {
+        "name": "Electricity price next hour"
+      },
+      "stroomprijs_laagste_vandaag": {
+        "name": "Lowest electricity price today"
+      },
+      "stroomprijs_hoogste_vandaag": {
+        "name": "Highest electricity price today"
+      },
+      "stroomprijs_gemiddeld_vandaag": {
+        "name": "Average electricity price today"
+      },
+      "goedkoopste_uur": {
+        "name": "Cheapest hour"
+      },
+      "duurste_uur": {
+        "name": "Most expensive hour"
+      },
+      "beursprijs": {
+        "name": "Market price"
+      },
+      "gasprijs": {
+        "name": "Gas price"
+      },
+      "goedkoopste_leverancier": {
+        "name": "Cheapest supplier now"
+      }
+    }
+  }
+}
