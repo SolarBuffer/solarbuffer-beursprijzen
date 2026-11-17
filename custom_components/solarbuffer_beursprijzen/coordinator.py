@@ -15,7 +15,15 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from homeassistant.util import dt as dt_util
 
 from .api import PrijzenFout, haal_prijzen
-from .const import ALLEEN_BEURS, CONF_LEVERANCIER, DOMAIN, UPDATE_INTERVAL
+from .const import (
+    ALLEEN_BEURS,
+    CONF_LEVERANCIER,
+    DOMAIN,
+    SNEL_INTERVAL,
+    SNEL_TOT_UUR,
+    SNEL_VAN_UUR,
+    UPDATE_INTERVAL,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -88,6 +96,7 @@ class PrijzenCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if self._mislukt_gemeld:
                 _LOGGER.info("Prijzen ophalen lukt weer")
                 self._mislukt_gemeld = False
+            self.update_interval = self._volgende_interval(data)
             return data
         except PrijzenFout as err:
             # De prijzen staan al uren vooruit vast. Een keer niet kunnen
@@ -102,6 +111,23 @@ class PrijzenCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                     self._mislukt_gemeld = True
                 return self.data
             raise UpdateFailed(f"Prijzen ophalen mislukt: {err}") from err
+
+    def _volgende_interval(self, data: dict[str, Any] | None) -> timedelta:
+        """Hoe lang tot het volgende verzoek.
+
+        Een keer per uur, behalve tussen 13:00 en 15:00 zolang de prijzen van
+        morgen er nog niet zijn: dan elk kwartier. Vlak voor 13:00 wachten we
+        niet een vol uur, anders begint het snelle kijken pas laat.
+        """
+        nu = dt_util.now()
+        morgen_binnen = bool(self.van_dag(_reeks((data or {}).get("uren") or [], None), 1))
+        if SNEL_VAN_UUR <= nu.hour < SNEL_TOT_UUR:
+            return UPDATE_INTERVAL if morgen_binnen else SNEL_INTERVAL
+        start_snel = nu.replace(hour=SNEL_VAN_UUR, minute=0, second=0, microsecond=0)
+        tot_start = start_snel - nu
+        if not morgen_binnen and timedelta(0) < tot_start < UPDATE_INTERVAL:
+            return tot_start + timedelta(seconds=30)
+        return UPDATE_INTERVAL
 
     # --- elk heel uur de sensoren bijwerken, ook zonder nieuw verzoek ------
 

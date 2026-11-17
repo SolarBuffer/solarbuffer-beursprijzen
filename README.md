@@ -89,8 +89,9 @@ en diensten hoe ze bij jou heten.
 
 ## Waar de prijzen vandaan komen
 
-De integratie haalt elk kwartier de prijzen op bij de openbare prijzendienst
-van SolarBuffer, die je ook als pagina kunt bekijken op
+De integratie haalt de prijzen een keer per uur op bij de openbare
+prijzendienst van SolarBuffer. Tussen 13:00 en 15:00 kijkt hij elk kwartier,
+tot de prijzen van morgen binnen zijn. De dienst kun je ook als pagina bekijken op
 [hub.solarbuffer.nl/energieprijzen](https://hub.solarbuffer.nl/energieprijzen).
 De beursprijs komt van [EnergyZero](https://www.energyzero.nl), de inkoopopslag
 per leverancier van [energieprijzen-nl](https://github.com/zhinees/energieprijzen-nl)
