@@ -80,11 +80,27 @@ class PrijzenCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             CONF_LEVERANCIER, entry.data.get(CONF_LEVERANCIER, ALLEEN_BEURS)
         )
         self._stop_tik: Callable[[], None] | None = None
+        self._mislukt_gemeld = False
 
     async def _async_update_data(self) -> dict[str, Any]:
         try:
-            return await haal_prijzen(async_get_clientsession(self.hass))
+            data = await haal_prijzen(async_get_clientsession(self.hass))
+            if self._mislukt_gemeld:
+                _LOGGER.info("Prijzen ophalen lukt weer")
+                self._mislukt_gemeld = False
+            return data
         except PrijzenFout as err:
+            # De prijzen staan al uren vooruit vast. Een keer niet kunnen
+            # ophalen, door een haperende DNS of wifi, is dus geen reden om
+            # alles op niet beschikbaar te zetten: zolang wat we hebben het
+            # huidige uur nog dekt, rekenen we daarmee door.
+            if self.data and self.op_moment(_reeks(self.data.get("uren") or [], None)):
+                if not self._mislukt_gemeld:
+                    _LOGGER.warning(
+                        "Prijzen ophalen mislukt (%s), de laatst opgehaalde prijzen blijven gelden", err
+                    )
+                    self._mislukt_gemeld = True
+                return self.data
             raise UpdateFailed(f"Prijzen ophalen mislukt: {err}") from err
 
     # --- elk heel uur de sensoren bijwerken, ook zonder nieuw verzoek ------
