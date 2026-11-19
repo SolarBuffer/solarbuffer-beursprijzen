@@ -193,6 +193,10 @@ class PrijsSensor(CoordinatorEntity[PrijzenCoordinator], SensorEntity):
     _attr_has_entity_name = True
     _attr_attribution = "Beursprijs via EnergyZero, inkoopopslag via energieprijzen-nl (CC BY 4.0)"
     entity_description: PrijsSensorBeschrijving
+    # De uurlijsten zijn groot en veranderen bij elke prijs. Ze blijven
+    # beschikbaar voor templates en grafieken, maar de recorder slaat ze niet
+    # bij elke statuswijziging opnieuw op in de database.
+    _unrecorded_attributes = frozenset({"vandaag", "morgen", "raw_today", "raw_tomorrow"})
 
     def __init__(
         self, coordinator: PrijzenCoordinator, entry: ConfigEntry, beschrijving: PrijsSensorBeschrijving
